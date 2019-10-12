@@ -20,16 +20,21 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambotsextensions</artifactId>
+			<version>LATEST</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.github.xabgesagtx</groupId>
 			<artifactId>telegram-spring-boot-starter</artifactId>
-			<version>0.20</version>
+			<version>LATEST</version>
 		</dependency>
 
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
 <!--		</dependency>-->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
