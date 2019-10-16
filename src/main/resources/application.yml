@@ -1,3 +1,10 @@
 bot:
-  token: test
+  token: 974454071:AAEGMhxE5ltRKdI6kKi-elZpuZ_6-SVGvzY
   username: RPGIRLBot
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/RPGIRL
+    username: postgres
+    password: 123
+  jpa:
+    generate-ddl: true

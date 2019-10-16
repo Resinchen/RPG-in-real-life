@@ -1,27 +1,59 @@
 package ru.matmech.jCourse.Commands;
 
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.matmech.jCourse.Domains.Player;
 
-public class TestCommand extends BotCommand {
-    public TestCommand(String commandIdentifier, String description) {
-        super(commandIdentifier, description);
+public class TestCommand {
+    public static Player player = new Player(12, "Alex");
+
+    public static void ChangeStat(String statistica, int deltaPoint) {
+        player.addFreePoints(-deltaPoint);
+
+        if (player.getFreePoints() <= 0) {
+            deltaPoint = 0;
+        }
+
+        switch (statistica) {
+            case "Strength":
+                player.addStrength(deltaPoint);
+                break;
+            case "Endurance":
+                player.addEndurance(deltaPoint);
+                break;
+            case "Charisma":
+                player.addCharisma(deltaPoint);
+                break;
+            case "Intelligence":
+                player.addIntelligence(deltaPoint);
+                break;
+            case "Lucky":
+                player.addLucky(deltaPoint);
+                break;
+        }
+
     }
 
-    @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chat.getId().toString());
-        sendMessage.setText(user.getFirstName() + " send me " + String.valueOf(strings));
+    public static int GetStat(String statistica) {
+        int res = 0;
 
-        try {
-            absSender.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        switch (statistica) {
+            case "Strength":
+                res = player.getStrength();
+                break;
+            case "Endurance":
+                res = player.getEndurance();
+                break;
+            case "Charisma":
+                res = player.getCharisma();
+                break;
+            case "Intelligence":
+                res = player.getIntelligence();
+                break;
+            case "Lucky":
+                res = player.getLucky();
+                break;
         }
+        return res;
     }
 }
