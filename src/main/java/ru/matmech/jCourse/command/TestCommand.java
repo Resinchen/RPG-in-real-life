@@ -1,11 +1,9 @@
-package ru.matmech.jCourse.Commands;
+package ru.matmech.jCourse.command;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.matmech.jCourse.Domains.Player;
+import ru.matmech.jCourse.domain.Player;
 
 public class TestCommand {
-    public static Player player = new Player(12, "Alex");
+    public static Player player = new Player( 12L, "Alex");
 
     public static void ChangeStat(String statistica, int deltaPoint) {
         player.addFreePoints(-deltaPoint);

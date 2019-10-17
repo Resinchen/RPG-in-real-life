@@ -1,9 +1,12 @@
-package ru.matmech.jCourse.Domains;
+package ru.matmech.jCourse.domain;
 
-//import javax.persistence.Entity;
-//import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-//@Entity
+@Entity
+@Table(name="players")
 public class Player {
     @Override
     public String toString() {
@@ -20,25 +23,37 @@ public class Player {
                 '}';
     }
 
-    //    @Id
-    private Integer id;
+    @Id
+    @Column(name = "player_id")
+    private Long id;
 
+    @Column(name = "player_name")
     private String name;
 
+    @Column(name = "level")
     private Integer level;
+
+    @Column(name = "experience")
     private Integer experience;
+
+    @Column(name = "free_points")
     private Integer freePoints;
 
     //stats
+    @Column(name = "strength")
     private Integer strength;
+    @Column(name = "endurance")
     private Integer endurance;
+    @Column(name = "charisma")
     private Integer charisma;
+    @Column(name = "intelligence")
     private Integer intelligence;
+    @Column(name = "lucky")
     private  Integer lucky;
 
-    public Player() {}
+    protected Player() {}
 
-    public Player(Integer id, String name) {
+    public Player(Long id, String name) {
         this.id = id;
         this.name = name;
         this.experience = 0;
@@ -51,11 +66,11 @@ public class Player {
         this.lucky = 5;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

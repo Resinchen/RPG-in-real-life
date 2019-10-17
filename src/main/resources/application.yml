@@ -3,8 +3,10 @@ bot:
   username: RPGIRLBot
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/RPGIRL
+    url: jdbc:postgresql://localhost:5432/rpgirl
     username: postgres
-    password: 123
+    password: 123456
+    driver-class-name: org.postgresql.Driver
   jpa:
-    generate-ddl: true
+    hibernate:
+      ddl-auto: create

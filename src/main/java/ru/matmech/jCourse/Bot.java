@@ -2,6 +2,7 @@ package ru.matmech.jCourse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,18 +11,14 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.matmech.jCourse.Commands.CreateCommands;
-import ru.matmech.jCourse.Commands.TestCommand;
-//import ru.matmech.jCourse.repos.PlayerRepo;
+import ru.matmech.jCourse.command.CreateCommands;
+import ru.matmech.jCourse.command.TestCommand;
 
 import javax.annotation.PostConstruct;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
-
-    //@Autowired
-    //public static PlayerRepo playerRepo;
 
     @Value("${bot.token}")
     private String token;
@@ -49,6 +46,7 @@ public class Bot extends TelegramLongPollingBot {
                 logger.info("Get command /create");
                 send(CreateCommands.createPlayer(update.getMessage()));
             }
+
         } else if(update.hasCallbackQuery()) {
             Message cbMessage = update.getCallbackQuery().getMessage();
             String cb_data = update.getCallbackQuery().getData();

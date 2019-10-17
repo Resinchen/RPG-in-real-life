@@ -1,11 +1,12 @@
-package ru.matmech.jCourse.Commands;
+package ru.matmech.jCourse.command;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.matmech.jCourse.Domains.Player;
+import ru.matmech.jCourse.PlayerService;
+import ru.matmech.jCourse.domain.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,11 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.matmech.jCourse.Utils.TelegramUtils.*;
+import static ru.matmech.jCourse.utils.TelegramUtils.*;
 import static java.lang.Math.toIntExact;
 
 public class CreateCommands {
     private static Player player;
+    private static PlayerService service = new PlayerService();
 
     public static SendMessage createPlayer(Message message) {
         long chat_id = message.getChatId();
@@ -34,6 +36,8 @@ public class CreateCommands {
                 .collect(Collectors.toList());
 
         keyboard.setKeyboard(rows);
+
+        player = new Player(chat_id, message.getFrom().getUserName());
 
         return GenerateSendMessage(chat_id, text, keyboard);
     }
@@ -86,11 +90,11 @@ public class CreateCommands {
     }
 
     public static EditMessageText donePlayer(Message message) {
-        //TODO Sending to DB
-
         long chat_id = message.getChatId();
         int message_id = toIntExact(message.getMessageId());
         String text = "Character Created! " + player;
+
+        service.create(player);
 
         return GenerateEditMessage(chat_id, message_id, text);
     }
