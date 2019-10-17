@@ -1,5 +1,5 @@
 bot:
-  token: 974454071:AAEGMhxE5ltRKdI6kKi-elZpuZ_6-SVGvzY
+  token: secret
   username: RPGIRLBot
 spring:
   datasource:
