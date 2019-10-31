@@ -1,33 +1,36 @@
-package ru.matmech.jCourse.Commands;
+package ru.matmech.jCourse.utils;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.matmech.jCourse.Domains.Player;
+import ru.matmech.jCourse.domain.Player;
 
-public class TestCommand {
-    public static Player player = new Player(12, "Alex");
+public class PlayerUtils {
+    public static Player player;
+
+    public static void create(long id, String name) {
+        player = new Player(id, name);
+    }
 
     public static void ChangeStat(String statistica, int deltaPoint) {
-        player.addFreePoints(-deltaPoint);
 
         if (player.getFreePoints() <= 0) {
             deltaPoint = 0;
         }
 
+        player.addFreePoints(-deltaPoint);
+
         switch (statistica) {
-            case "Strength":
+            case "strength":
                 player.addStrength(deltaPoint);
                 break;
-            case "Endurance":
+            case "endurance":
                 player.addEndurance(deltaPoint);
                 break;
-            case "Charisma":
+            case "charisma":
                 player.addCharisma(deltaPoint);
                 break;
-            case "Intelligence":
+            case "intelligence":
                 player.addIntelligence(deltaPoint);
                 break;
-            case "Lucky":
+            case "lucky":
                 player.addLucky(deltaPoint);
                 break;
         }
@@ -35,22 +38,22 @@ public class TestCommand {
     }
 
     public static int GetStat(String statistica) {
-        int res = 0;
+        int res = -1;
 
         switch (statistica) {
-            case "Strength":
+            case "strength":
                 res = player.getStrength();
                 break;
-            case "Endurance":
+            case "endurance":
                 res = player.getEndurance();
                 break;
-            case "Charisma":
+            case "charisma":
                 res = player.getCharisma();
                 break;
-            case "Intelligence":
+            case "intelligence":
                 res = player.getIntelligence();
                 break;
-            case "Lucky":
+            case "lucky":
                 res = player.getLucky();
                 break;
         }
