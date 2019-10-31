@@ -6,8 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="players")
+@Table(name = "players")
 public class Player {
+    //TODO добавить навыки
     @Override
     public String toString() {
         return "Player{" +
@@ -20,6 +21,8 @@ public class Player {
                 ", charisma=" + charisma +
                 ", intelligence=" + intelligence +
                 ", lucky=" + lucky +
+                "\n--------------------------\n" +
+                "free points: " + freePoints +
                 '}';
     }
 
