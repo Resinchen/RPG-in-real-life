@@ -14,18 +14,24 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.matmech.jCourse.command.CreateCommands;
 import ru.matmech.jCourse.command.StatCommands;
-import ru.matmech.jCourse.utils.PlayerUtils;
+import ru.matmech.jCourse.Utils.PlayerUtils;
+import ru.matmech.jCourse.domain.User;
+import ru.matmech.jCourse.services.PlayerService;
 
 import javax.annotation.PostConstruct;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
+    private static User user;
 
     @Autowired
     private CreateCommands createCommands;
     @Autowired
     private StatCommands statCommand;
+
+    @Autowired
+    private PlayerService playerService;
 
     @Value("${bot.token}")
     private String token;
@@ -50,21 +56,30 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
+
             logger.info("Get command -> {}", message.getText());
 
             if (message.getText().equals("/create")) {
                 send(createCommands.createPlayer(message));
             }
             else if (message.getText().equals("/info")) {
-                send(new SendMessage().setChatId(message.getChatId()).setText("_Hello_").enableMarkdown(true));
-                send(statCommand.getPlayerInfo(message));
-                send(statCommand.getStatImage(message));
-//                send(statCommand.getPerks());
+                user = PlayerUtils.getUser(playerService, message.getChatId());
+                if (user != null) {
+                    send(new SendMessage().setChatId(message.getChatId()).setText("_Hello_").enableMarkdown(true));
+                    send(statCommand.getPlayerInfo(message, user));
+                    send(statCommand.getStatImage(message, user));
+//                    send(statCommand.getPerks(message, user));
+                }
+                else {
+                    send(new SendMessage().setChatId(message.getChatId()).setText("Player not found"));
+                }
             }
 
         } else if(update.hasCallbackQuery()) {
             Message cbMessage = update.getCallbackQuery().getMessage();
             String cb_data = update.getCallbackQuery().getData();
+
+            user = PlayerUtils.getUser(playerService, cbMessage.getChatId());
 
             logger.info("Get callback -> {}", cb_data);
 
@@ -72,33 +87,33 @@ public class Bot extends TelegramLongPollingBot {
 
             if (spt[0].equals("change")) {
                 if(spt[1].equals("stats")) {
-                    send(createCommands.changeStats(cbMessage));
+                    send(createCommands.changeStats(cbMessage, user));
                 } else {
                     logger.info("Changing {}", spt[1]);
-                    send(createCommands.changeStat(cbMessage, spt[1], PlayerUtils.player));
+                    send(createCommands.changeStat(cbMessage, spt[1], user));
                 }
             }
 
             else if (spt[0].equals("update")) {
                 //TODO перенести изменение статы отсюда в CreateCommands и ?util.PlayerHandler?
-                logger.info("Change {}: {}", spt[2], PlayerUtils.GetStat(spt[2]));
+                logger.info("Change {}: {}", spt[2], PlayerUtils.GetStat(user, spt[2]));
 
                 if(spt[1].equals("sub")) {
-                    PlayerUtils.ChangeStat(spt[2], -1);
+                    PlayerUtils.ChangeStat(user, spt[2], -1);
 
                 } else if (spt[1].equals("add")) {
-                    PlayerUtils.ChangeStat(spt[2], 1);
+                    PlayerUtils.ChangeStat(user, spt[2], 1);
                 }
-                send(createCommands.changeStat(cbMessage, spt[2], PlayerUtils.player));
+                send(createCommands.changeStat(cbMessage, spt[2], user));
             }
 
             else if (cb_data.equals("back2stats")) {
-                send(createCommands.changeStats(cbMessage));
+                send(createCommands.changeStats(cbMessage, user));
             }
 
             else if (cb_data.equals("done_creating")) {
-                logger.info("Creating player is done!\n {}", PlayerUtils.player);
-                send(createCommands.donePlayer(cbMessage));
+                logger.info("Creating player is done!\n {}", user);
+                send(createCommands.donePlayer(cbMessage, user));
             }
         }
     }

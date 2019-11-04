@@ -6,12 +6,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matmech.jCourse.services.PlayerService;
-import ru.matmech.jCourse.domain.Player;
+import ru.matmech.jCourse.domain.User;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 
-import static ru.matmech.jCourse.utils.TelegramUtils.*;
+import static ru.matmech.jCourse.Utils.TelegramUtils.*;
 
 @Component
 public class StatCommands {
@@ -19,34 +19,27 @@ public class StatCommands {
     @Autowired
     private PlayerService service;
 
-    private Player player;
-
-    public SendMessage getPlayerInfo(Message message) {
+    public SendMessage getPlayerInfo(Message message, User user) {
         long chat_id = message.getChatId();
         StringBuilder builder = new StringBuilder();
-        player = service.findById(chat_id);
-        if (player == null)
-           return new SendMessage().setChatId(chat_id).setParseMode("Markdown").setText("Player not found");
 
         //TODO НЕ РАБОТАЕТ РАЗМЕТКА
-        builder.append("**")
-                .append(player.getName())
-                .append("**")
+        builder.append("_")
+                .append(user.getName())
+                .append("_")
                 .append("\n---")
-                .append("\nLevel: ").append(player.getLevel())
-                .append("\nExp: ").append(player.getExperience())
-                .append("\nPoints: ").append(player.getFreePoints());
+                .append("\nLevel: ").append(user.getLevel())
+                .append("\nExp: ").append(user.getExperience())
+                .append("\nPoints: ").append(user.getFreePoints());
 
         return GenerateSendMarkupMessage(chat_id, builder.toString());
     }
 
-    public SendPhoto getStatImage(Message message) {
+    public SendPhoto getStatImage(Message message, User user) {
         //TODO заменить на генератор картинки
         long chat_id = message.getChatId();
-        if (player != null)
-            return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
-        // throw new Exception(player not found)
-        return null;
+
+        return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
     }
 
     public SendMessage getPerks() {

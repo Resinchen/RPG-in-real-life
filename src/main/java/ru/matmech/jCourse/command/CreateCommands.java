@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.matmech.jCourse.domain.User;
 import ru.matmech.jCourse.services.PlayerService;
-import ru.matmech.jCourse.domain.Player;
-import ru.matmech.jCourse.utils.PlayerUtils;
+import ru.matmech.jCourse.Utils.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.matmech.jCourse.utils.TelegramUtils.*;
+import static ru.matmech.jCourse.Utils.TelegramUtils.*;
 import static java.lang.Math.toIntExact;
 
 @Component
@@ -45,10 +45,10 @@ public class CreateCommands {
         return GenerateSendMessage(chat_id, text, keyboard);
     }
 
-    public EditMessageText changeStats(Message message) {
+    public EditMessageText changeStats(Message message, User user) {
         long chat_id = message.getChatId();
         int message_id = toIntExact(message.getMessageId());
-        String text = "Change statistic`s " + PlayerUtils.player.getFreePoints();
+        String text = "Change statistic`s " + user.getFreePoints();
 
         InlineKeyboardButton strBtn = GenerateKeyboardButton("Strength", "change_strength");
         InlineKeyboardButton endBtn = GenerateKeyboardButton("Endurance", "change_endurance");
@@ -69,10 +69,11 @@ public class CreateCommands {
         return GenerateEditMessage(chat_id, message_id, text, keyboard);
     }
 
-    public EditMessageText changeStat(Message message, String statistica, Player player) {
+    public EditMessageText changeStat(Message message, String statistica, User user) {
         long chat_id = message.getChatId();
         int message_id = toIntExact(message.getMessageId());
-        String text = "Change " + statistica + ": " + PlayerUtils.GetStat(statistica) + "Осталось: " + player.getFreePoints();
+        String text = "Change " + statistica + ": " + PlayerUtils.GetStat(user, statistica) + "\nОсталось очков: " + user.getFreePoints();
+
 
         InlineKeyboardButton backBtn = GenerateKeyboardButton("Back", "back2stats");
         InlineKeyboardButton subBtn = GenerateKeyboardButton("-", "update_sub_" + statistica);
@@ -92,12 +93,12 @@ public class CreateCommands {
         return GenerateEditMessage(chat_id, message_id, text, keyboard);
     }
 
-    public EditMessageText donePlayer(Message message) {
+    public EditMessageText donePlayer(Message message, User user) {
         long chat_id = message.getChatId();
         int message_id = toIntExact(message.getMessageId());
-        String text = "Character Created! " + PlayerUtils.player;
+        String text = "Character Created! " + user;
 
-        service.create(PlayerUtils.player);
+        service.create(user);
 
         return GenerateEditMessage(chat_id, message_id, text);
     }

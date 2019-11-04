@@ -6,12 +6,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "players")
-public class Player {
+@Table(name = "users")
+public class User {
     //TODO добавить навыки
     @Override
     public String toString() {
-        return "Player{" +
+        return "User {" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", level=" + level +
@@ -27,10 +27,10 @@ public class Player {
     }
 
     @Id
-    @Column(name = "player_id")
+    @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "player_name")
+    @Column(name = "user_name")
     private String name;
 
     @Column(name = "level")
@@ -54,9 +54,9 @@ public class Player {
     @Column(name = "lucky")
     private  Integer lucky;
 
-    protected Player() {}
+    protected User() {}
 
-    public Player(Long id, String name) {
+    public User(Long id, String name) {
         this.id = id;
         this.name = name;
         this.experience = 0;

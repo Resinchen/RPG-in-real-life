@@ -1,62 +1,73 @@
-package ru.matmech.jCourse.utils;
+package ru.matmech.jCourse.Utils;
 
-import ru.matmech.jCourse.domain.Player;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.matmech.jCourse.domain.User;
+import ru.matmech.jCourse.services.PlayerService;
 
 public class PlayerUtils {
-    public static Player player;
-
     public static void create(long id, String name) {
-        player = new Player(id, name);
+        SessionsPool.addSession(id, new User(id, name));
     }
 
-    public static void ChangeStat(String statistica, int deltaPoint) {
+    public static User getUser(PlayerService service, long id) {
+        if (SessionsPool.has(id)) {
+            return SessionsPool.getSession(id);
+        }
 
-        if (player.getFreePoints() <= 0) {
+        User user = service.findById(id);
+        SessionsPool.addSession(id, user);
+
+        return user;
+    }
+
+    public static void ChangeStat(User user, String statistica, int deltaPoint) {
+        if (user.getFreePoints() <= 0) {
             deltaPoint = 0;
         }
 
-        player.addFreePoints(-deltaPoint);
+        user.addFreePoints(-deltaPoint);
 
         switch (statistica) {
             case "strength":
-                player.addStrength(deltaPoint);
+                user.addStrength(deltaPoint);
                 break;
             case "endurance":
-                player.addEndurance(deltaPoint);
+                user.addEndurance(deltaPoint);
                 break;
             case "charisma":
-                player.addCharisma(deltaPoint);
+                user.addCharisma(deltaPoint);
                 break;
             case "intelligence":
-                player.addIntelligence(deltaPoint);
+                user.addIntelligence(deltaPoint);
                 break;
             case "lucky":
-                player.addLucky(deltaPoint);
+                user.addLucky(deltaPoint);
                 break;
         }
-
     }
 
-    public static int GetStat(String statistica) {
+    public static int GetStat(User user, String statistica) {
         int res = -1;
 
         switch (statistica) {
             case "strength":
-                res = player.getStrength();
+                res = user.getStrength();
                 break;
             case "endurance":
-                res = player.getEndurance();
+                res = user.getEndurance();
                 break;
             case "charisma":
-                res = player.getCharisma();
+                res = user.getCharisma();
                 break;
             case "intelligence":
-                res = player.getIntelligence();
+                res = user.getIntelligence();
                 break;
             case "lucky":
-                res = player.getLucky();
+                res = user.getLucky();
                 break;
         }
+
         return res;
     }
 }

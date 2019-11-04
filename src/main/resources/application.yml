@@ -1,0 +1,12 @@
+bot:
+  token: 974454071:AAEGMhxE5ltRKdI6kKi-elZpuZ_6-SVGvzY
+  username: RPGIRLBot
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rpgirl
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
