@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.matmech.jCourse.domain.User;
-import ru.matmech.jCourse.services.PlayerService;
+import ru.matmech.jCourse.services.UserService;
 import ru.matmech.jCourse.Utils.PlayerUtils;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import static java.lang.Math.toIntExact;
 @Component
 public class CreateCommands {
     @Autowired
-    private PlayerService service;
+    private UserService service;
 
     public SendMessage createPlayer(Message message) {
         long chat_id = message.getChatId();

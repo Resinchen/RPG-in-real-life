@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.matmech.jCourse.services.PlayerService;
+import ru.matmech.jCourse.services.UserService;
 import ru.matmech.jCourse.domain.User;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -17,7 +17,7 @@ import static ru.matmech.jCourse.Utils.TelegramUtils.*;
 public class StatCommands {
 
     @Autowired
-    private PlayerService service;
+    private UserService service;
 
     public SendMessage getPlayerInfo(Message message, User user) {
         long chat_id = message.getChatId();

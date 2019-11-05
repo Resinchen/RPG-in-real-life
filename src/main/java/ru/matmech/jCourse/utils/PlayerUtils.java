@@ -3,14 +3,14 @@ package ru.matmech.jCourse.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.matmech.jCourse.domain.User;
-import ru.matmech.jCourse.services.PlayerService;
+import ru.matmech.jCourse.services.UserService;
 
 public class PlayerUtils {
     public static void create(long id, String name) {
         SessionsPool.addSession(id, new User(id, name));
     }
 
-    public static User getUser(PlayerService service, long id) {
+    public static User getUser(UserService service, long id) {
         if (SessionsPool.has(id)) {
             return SessionsPool.getSession(id);
         }

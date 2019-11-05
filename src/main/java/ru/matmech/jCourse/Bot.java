@@ -16,7 +16,7 @@ import ru.matmech.jCourse.command.CreateCommands;
 import ru.matmech.jCourse.command.StatCommands;
 import ru.matmech.jCourse.Utils.PlayerUtils;
 import ru.matmech.jCourse.domain.User;
-import ru.matmech.jCourse.services.PlayerService;
+import ru.matmech.jCourse.services.UserService;
 
 import javax.annotation.PostConstruct;
 
@@ -31,7 +31,7 @@ public class Bot extends TelegramLongPollingBot {
     private StatCommands statCommand;
 
     @Autowired
-    private PlayerService playerService;
+    private UserService userService;
 
     @Value("${bot.token}")
     private String token;
@@ -63,7 +63,7 @@ public class Bot extends TelegramLongPollingBot {
                 send(createCommands.createPlayer(message));
             }
             else if (message.getText().equals("/info")) {
-                user = PlayerUtils.getUser(playerService, message.getChatId());
+                user = PlayerUtils.getUser(userService, message.getChatId());
                 if (user != null) {
                     send(new SendMessage().setChatId(message.getChatId()).setText("_Hello_").enableMarkdown(true));
                     send(statCommand.getPlayerInfo(message, user));
@@ -79,7 +79,7 @@ public class Bot extends TelegramLongPollingBot {
             Message cbMessage = update.getCallbackQuery().getMessage();
             String cb_data = update.getCallbackQuery().getData();
 
-            user = PlayerUtils.getUser(playerService, cbMessage.getChatId());
+            user = PlayerUtils.getUser(userService, cbMessage.getChatId());
 
             logger.info("Get callback -> {}", cb_data);
 

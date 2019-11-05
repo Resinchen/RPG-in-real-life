@@ -3,16 +3,16 @@ package ru.matmech.jCourse.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.matmech.jCourse.domain.User;
-import ru.matmech.jCourse.repositories.PlayerRepository;
+import ru.matmech.jCourse.repositories.UserRepository;
 
 import java.util.List;
 
 @Service
-public class PlayerService {
+public class UserService {
     @Autowired
-    PlayerRepository repository;
+    UserRepository repository;
 
-    public PlayerService() {}
+    public UserService() {}
 
     public User findById(Long id) {
         return repository.findById(id).orElse(null);
