@@ -1,4 +1,4 @@
-package ru.matmech.jCourse;
+package ru.matmech.jCourse.Utils;
 
 import ru.matmech.jCourse.domain.User;
 

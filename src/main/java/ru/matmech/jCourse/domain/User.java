@@ -1,12 +1,13 @@
 package ru.matmech.jCourse.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
 public class User {
     //TODO добавить навыки
     @Override
@@ -30,7 +31,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "user_name")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "level")
@@ -54,6 +55,21 @@ public class User {
     @Column(name = "lucky")
     private  Integer lucky;
 
+
+    public Set<Perk> getPerks() {
+        return perks;
+    }
+    public void setPerks(Set<Perk> perks) {
+        this.perks = perks;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name="USERS_PERKS",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "perk_id")}
+    )
+    private Set<Perk> perks = new HashSet<>();
+
     protected User() {}
 
     public User(Long id, String name) {
@@ -72,7 +88,6 @@ public class User {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -80,7 +95,6 @@ public class User {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -88,7 +102,6 @@ public class User {
     public Integer getLevel() {
         return level;
     }
-
     public void setLevel(Integer level) {
         this.level = level;
     }
@@ -96,7 +109,6 @@ public class User {
     public Integer getExperience() {
         return experience;
     }
-
     public void setExperience(Integer experience) {
         this.experience = experience;
     }
@@ -107,7 +119,6 @@ public class User {
     public Integer getFreePoints() {
         return freePoints;
     }
-
     public void setFreePoints(Integer freePoints) {
         this.freePoints = freePoints;
     }
@@ -118,7 +129,6 @@ public class User {
     public Integer getStrength() {
         return strength;
     }
-
     public void setStrength(Integer strength) {
         this.strength = strength;
     }
@@ -129,7 +139,6 @@ public class User {
     public Integer getEndurance() {
         return endurance;
     }
-
     public void setEndurance(Integer endurance) {
         this.endurance = endurance;
     }
@@ -140,7 +149,6 @@ public class User {
     public Integer getCharisma() {
         return charisma;
     }
-
     public void setCharisma(Integer charisma) {
         this.charisma = charisma;
     }
@@ -151,7 +159,6 @@ public class User {
     public Integer getIntelligence() {
         return intelligence;
     }
-
     public void setIntelligence(Integer intelligence) {
         this.intelligence = intelligence;
     }
@@ -162,7 +169,6 @@ public class User {
     public Integer getLucky() {
         return lucky;
     }
-
     public void setLucky(Integer lucky) {
         this.lucky = lucky;
     }

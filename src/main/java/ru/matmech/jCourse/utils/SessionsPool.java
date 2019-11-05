@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.matmech.jCourse.Session;
 import ru.matmech.jCourse.domain.User;
 
 import java.util.Date;
@@ -34,7 +33,7 @@ public class SessionsPool {
         return Session.NullSession.getUser();
     }
 
-    @Scheduled(fixedRate = 50000)
+    @Scheduled(fixedRate = 150000)
     private static void ReleaseSessions() {
         for (Map.Entry<Long, Session> entry : sessions.entrySet()) {
             if (new Date().getTime() - entry.getValue().getDateCreateSession().getTime() > 5000) {
@@ -44,3 +43,5 @@ public class SessionsPool {
         }
     }
 }
+//java cache caffeine timeout
+//

@@ -13,13 +13,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.matmech.jCourse.command.CreateCommands;
+import ru.matmech.jCourse.command.PerksCommand;
 import ru.matmech.jCourse.command.StatCommands;
 import ru.matmech.jCourse.Utils.PlayerUtils;
 import ru.matmech.jCourse.domain.User;
 import ru.matmech.jCourse.services.UserService;
 
 import javax.annotation.PostConstruct;
-
+//TODO org.springframework.dao.InvalidDataAccessApiUsageException: Target object must not be null; nested exception is java.lang.IllegalArgumentException: Target object must not be null
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
@@ -29,6 +30,8 @@ public class Bot extends TelegramLongPollingBot {
     private CreateCommands createCommands;
     @Autowired
     private StatCommands statCommand;
+    @Autowired
+    private PerksCommand perksCommand;
 
     @Autowired
     private UserService userService;
@@ -68,10 +71,17 @@ public class Bot extends TelegramLongPollingBot {
                     send(new SendMessage().setChatId(message.getChatId()).setText("_Hello_").enableMarkdown(true));
                     send(statCommand.getPlayerInfo(message, user));
                     send(statCommand.getStatImage(message, user));
-//                    send(statCommand.getPerks(message, user));
+                    send(statCommand.getPerks(message, user));
                 }
                 else {
                     send(new SendMessage().setChatId(message.getChatId()).setText("Player not found"));
+                }
+            }
+            else if (message.getText().equals("/perks")) {
+                user = PlayerUtils.getUser(userService, message.getChatId());
+                if (user != null) {
+                    send(perksCommand.addDefaultPerk(message, user));
+                    send(perksCommand.getPerksList(message, user));
                 }
             }
 

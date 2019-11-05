@@ -1,7 +1,5 @@
 package ru.matmech.jCourse.Utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ru.matmech.jCourse.domain.User;
 import ru.matmech.jCourse.services.UserService;
 

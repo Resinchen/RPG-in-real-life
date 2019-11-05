@@ -2,6 +2,7 @@ package ru.matmech.jCourse.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.matmech.jCourse.domain.Perk;
 import ru.matmech.jCourse.domain.User;
 import ru.matmech.jCourse.repositories.UserRepository;
 
@@ -29,6 +30,11 @@ public class UserService {
     public void update(User updatedUser) {
         User userToBeUpdated = repository.getOne(updatedUser.getId());
         repository.save(updatedUser);
+    }
+
+    public void addPerk(User user, Perk perk) {
+        user.getPerks().add(perk);
+        repository.save(user);
     }
 
     public void delete(Long id) {

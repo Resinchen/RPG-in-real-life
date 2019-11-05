@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.matmech.jCourse.domain.Perk;
 import ru.matmech.jCourse.services.UserService;
 import ru.matmech.jCourse.domain.User;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -42,7 +43,16 @@ public class StatCommands {
         return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
     }
 
-    public SendMessage getPerks() {
-        throw new NotImplementedException();
+    public SendMessage getPerks(Message message, User user) {
+        long chat_id = message.getChatId();
+        StringBuilder builder = new StringBuilder();
+
+        for (Perk perk : user.getPerks()) {
+            builder.append('*')
+                    .append(perk.getName())
+                    .append('\n');
+        }
+
+        return GenerateSendMessage(chat_id, builder.toString());
     }
 }
