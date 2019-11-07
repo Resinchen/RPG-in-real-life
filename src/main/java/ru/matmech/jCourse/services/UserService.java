@@ -16,7 +16,7 @@ public class UserService {
     public UserService() {}
 
     public User findById(Long id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElse(User.NullUser);
     }
 
     public List<User> getAll() {
@@ -27,17 +27,8 @@ public class UserService {
         repository.save(user);
     }
 
-    public void update(User updatedUser) {
-        User userToBeUpdated = repository.getOne(updatedUser.getId());
-        repository.save(updatedUser);
-    }
-
     public void addPerk(User user, Perk perk) {
         user.getPerks().add(perk);
         repository.save(user);
-    }
-
-    public void delete(Long id) {
-        repository.deleteById(id);
     }
 }

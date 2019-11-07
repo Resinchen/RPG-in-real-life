@@ -1,28 +1,44 @@
 package ru.matmech.jCourse.Utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.matmech.jCourse.domain.User;
+import ru.matmech.jCourse.services.PerksService;
 import ru.matmech.jCourse.services.UserService;
 
-public class PlayerUtils {
-    public static void create(long id, String name) {
+@Component
+public class UserUtils {
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PerksService perksService;
+
+    public void create(long id, String name) {
         SessionsPool.addSession(id, new User(id, name));
     }
 
-    public static User getUser(UserService service, long id) {
-        if (SessionsPool.has(id)) {
-            return SessionsPool.getSession(id);
-        }
+    public User getUser(long id) {
+        if (SessionsPool.has(id))
+            return SessionsPool.getSessionUser(id);
 
-        User user = service.findById(id);
+        User user = userService.findById(id);
         SessionsPool.addSession(id, user);
 
         return user;
     }
 
-    public static void ChangeStat(User user, String statistica, int deltaPoint) {
-        if (user.getFreePoints() <= 0) {
+    public void addDefaultPerk(User user) {
+        userService.addPerk(user, perksService.findByName("Junior"));
+    }
+
+    public boolean isNotNullUser(User user) {
+        return !user.equals(User.NullUser);
+    }
+
+    public void ChangeStat(User user, String statistica, int deltaPoint) {
+        if (user.getFreePoints() <= 0)
             deltaPoint = 0;
-        }
 
         user.addFreePoints(-deltaPoint);
 
@@ -45,7 +61,7 @@ public class PlayerUtils {
         }
     }
 
-    public static int GetStat(User user, String statistica) {
+    public int getStat(User user, String statistica) {
         int res = -1;
 
         switch (statistica) {

@@ -25,12 +25,12 @@ public class SessionsPool {
         return sessions.containsKey(id);
     }
 
-    public static User getSession(long id) {
+    public static User getSessionUser(long id) {
         Session session = sessions.get(id);
         if (sessions.containsKey(id)) {
             return session.getUser();
         }
-        return Session.NullSession.getUser();
+        return User.NullUser;
     }
 
     @Scheduled(fixedRate = 150000)

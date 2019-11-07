@@ -2,14 +2,14 @@ package ru.matmech.jCourse.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
 public class User {
-    //TODO добавить навыки
+
+    public static User NullUser = new User(-1L, "anon");
+
     @Override
     public String toString() {
         return "User {" +
@@ -56,10 +56,10 @@ public class User {
     private  Integer lucky;
 
 
-    public Set<Perk> getPerks() {
+    public List<Perk> getPerks() {
         return perks;
     }
-    public void setPerks(Set<Perk> perks) {
+    public void setPerks(List<Perk> perks) {
         this.perks = perks;
     }
 
@@ -68,7 +68,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "perk_id")}
     )
-    private Set<Perk> perks = new HashSet<>();
+    private List<Perk> perks = new ArrayList<>();
 
     protected User() {}
 

@@ -1,12 +1,13 @@
 package ru.matmech.jCourse.domain;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "PERKS")
 public class Perk {
+    public static Perk NullPerk  = new Perk(-1L, "=-=", "---");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,20 +30,32 @@ public class Perk {
     @Column(name = "lucky")
     private  Integer lucky;
 
-    public Set<User> getUsers() {
+    protected  Perk() {}
+
+    public Perk(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.strength = 0;
+        this.endurance = 0;
+        this.charisma = 0;
+        this.intelligence = 0;
+        this.lucky = 0;
+    }
+
+    public List<User> getUsers() {
         return users;
     }
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
     @ManyToMany(mappedBy = "perks", fetch = FetchType.EAGER)
-    private Set<User> users = new HashSet<>();
+    private List<User> users = new ArrayList<>();
 
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -50,7 +63,6 @@ public class Perk {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -58,7 +70,6 @@ public class Perk {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -66,7 +77,6 @@ public class Perk {
     public Integer getStrength() {
         return strength;
     }
-
     public void setStrength(Integer strength) {
         this.strength = strength;
     }
@@ -74,7 +84,6 @@ public class Perk {
     public Integer getEndurance() {
         return endurance;
     }
-
     public void setEndurance(Integer endurance) {
         this.endurance = endurance;
     }
@@ -82,7 +91,6 @@ public class Perk {
     public Integer getCharisma() {
         return charisma;
     }
-
     public void setCharisma(Integer charisma) {
         this.charisma = charisma;
     }
@@ -90,7 +98,6 @@ public class Perk {
     public Integer getIntelligence() {
         return intelligence;
     }
-
     public void setIntelligence(Integer intelligence) {
         this.intelligence = intelligence;
     }
@@ -98,7 +105,6 @@ public class Perk {
     public Integer getLucky() {
         return lucky;
     }
-
     public void setLucky(Integer lucky) {
         this.lucky = lucky;
     }

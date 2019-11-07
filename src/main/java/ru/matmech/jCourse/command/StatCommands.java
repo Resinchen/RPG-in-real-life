@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matmech.jCourse.domain.Perk;
 import ru.matmech.jCourse.services.UserService;
 import ru.matmech.jCourse.domain.User;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 
@@ -18,7 +17,7 @@ import static ru.matmech.jCourse.Utils.TelegramUtils.*;
 public class StatCommands {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
 
     public SendMessage getPlayerInfo(Message message, User user) {
         long chat_id = message.getChatId();

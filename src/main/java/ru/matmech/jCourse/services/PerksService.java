@@ -13,7 +13,7 @@ public class PerksService {
     PerkRepository repository;
 
     public Perk findByName(String name) {
-        return repository.findByName(name).orElse(null);
+        return repository.findByName(name).orElse(Perk.NullPerk);
     }
 
     public List<Perk> getAll() {

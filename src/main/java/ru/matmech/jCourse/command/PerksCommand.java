@@ -19,7 +19,7 @@ public class PerksCommand {
     @Autowired
     private UserService userService;
 
-    public SendMessage getPerksList(Message message, User user) {
+    public SendMessage getPerksList(Message message) {
         long chat_id = message.getChatId();
         StringBuilder builder = new StringBuilder();
 
@@ -30,18 +30,4 @@ public class PerksCommand {
 
         return GenerateSendMessage(chat_id, builder.toString());
     }
-
-    public SendMessage addDefaultPerk(Message message, User user) {
-        long chat_id = message.getChatId();
-        StringBuilder builder = new StringBuilder();
-        userService.addPerk(user, perksService.findByName("Junior"));
-
-        for(Perk perk : user.getPerks()) {
-            builder.append("* ").append(perk.getName()).append(" - ")
-                    .append(perk.getDescription()).append('\n');
-        }
-
-        return GenerateSendMessage(chat_id, builder.toString());
-    }
-
 }
