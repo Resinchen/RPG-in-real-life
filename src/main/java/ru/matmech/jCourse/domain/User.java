@@ -113,7 +113,7 @@ public class User {
         this.experience = experience;
     }
     public void addExperience(Integer deltaExperience) {
-        this.experience = deltaExperience;
+        this.experience += deltaExperience;
     }
 
     public Integer getFreePoints() {

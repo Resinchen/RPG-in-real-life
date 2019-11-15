@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.matmech.jCourse.Utils.UserUtils;
 import ru.matmech.jCourse.domain.Perk;
 import ru.matmech.jCourse.services.UserService;
 import ru.matmech.jCourse.domain.User;
@@ -19,39 +20,52 @@ public class StatCommands {
     @Autowired
     private UserService userService;
 
-    public SendMessage getPlayerInfo(Message message, User user) {
+    public SendMessage getPlayerInfo(Message message) {
         long chat_id = message.getChatId();
-        StringBuilder builder = new StringBuilder();
+        String stringInfo;
+        String[] userInfo = userService.getUserInfo(chat_id);
 
-        //TODO НЕ РАБОТАЕТ РАЗМЕТКА
-        builder.append("_")
-                .append(user.getName())
-                .append("_")
-                .append("\n---")
-                .append("\nLevel: ").append(user.getLevel())
-                .append("\nExp: ").append(user.getExperience())
-                .append("\nPoints: ").append(user.getFreePoints());
+        if (userInfo.length != 0) {
+        stringInfo = "_" +
+                userInfo[0] +
+                "_" +
+                "\nLevel: " + userInfo[1] +
+                "\nExp: " + userInfo[2] +
+                "\nPoints: " + userInfo[3];
+        } else {
+            stringInfo = "Player not found";
+        }
 
-        return GenerateSendMarkupMessage(chat_id, builder.toString());
+        return GenerateSendMarkupMessage(chat_id, stringInfo);
     }
 
     public SendPhoto getStatImage(Message message, User user) {
         //TODO заменить на генератор картинки
         long chat_id = message.getChatId();
-
-        return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
+        if(UserUtils.isNotNullUser(user)) {
+            return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
+        }
+        return null;
     }
 
-    public SendMessage getPerks(Message message, User user) {
+    public SendMessage getPerks(Message message) {
         long chat_id = message.getChatId();
+        Perk[] userPerks = userService.getUserPerks(chat_id);
         StringBuilder builder = new StringBuilder();
-
-        for (Perk perk : user.getPerks()) {
+        for (Perk perk : userPerks) {
             builder.append('*')
                     .append(perk.getName())
                     .append('\n');
         }
 
         return GenerateSendMessage(chat_id, builder.toString());
+    }
+
+    //CHEAT!!!
+    public SendMessage cheatAddExp(Message message) {
+        long chat_id = message.getChatId();
+        userService.addExp(chat_id, 10);
+
+        return GenerateSendMessage(chat_id, "ЧИИИТЕЕРР!!!!");
     }
 }

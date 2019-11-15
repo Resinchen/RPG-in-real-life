@@ -24,8 +24,6 @@ import static java.lang.Math.toIntExact;
 public class CreateCommands {
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserUtils userUtils;
 
     public SendMessage createUser(Message message) {
         long chat_id = message.getChatId();
@@ -44,13 +42,15 @@ public class CreateCommands {
                 .collect(Collectors.toList());
 
         keyboard.setKeyboard(rows);
-        userUtils.create(chat_id, message.getFrom().getUserName());
+
+        userService.create(chat_id, message.getFrom().getUserName());
 
         return GenerateSendMessage(chat_id, text, keyboard);
     }
 
-    public EditMessageText changeStats(Message message, User user) {
+    public EditMessageText changeStats(Message message) {
         long chat_id = message.getChatId();
+        User user = userService.getUserById(chat_id);
         int message_id = toIntExact(message.getMessageId());
         String text = "Change statistic`s " + user.getFreePoints();
 
@@ -73,11 +73,12 @@ public class CreateCommands {
         return GenerateEditMessage(chat_id, message_id, text, keyboard);
     }
 
-    public EditMessageText changeStat(Message message, String statistica, User user) {
+    public EditMessageText changeStat(Message message, String statistica) {
         long chat_id = message.getChatId();
+        User user = userService.getUserById(chat_id);
         int message_id = toIntExact(message.getMessageId());
         String text = "Change " + statistica + ": " +
-                userUtils.getStat(user, statistica) +
+                UserUtils.getStat(user, statistica) +
                 "\nОсталось очков: " + user.getFreePoints();
 
 
@@ -99,27 +100,25 @@ public class CreateCommands {
         return GenerateEditMessage(chat_id, message_id, text, keyboard);
     }
 
-
-    public EditMessageText donePlayer(Message message, User user) {
+    public EditMessageText donePlayer(Message message) {
         long chat_id = message.getChatId();
+        User user = userService.getUserById(chat_id);
         int message_id = toIntExact(message.getMessageId());
         String text = "Character Created! " + user;
-        userUtils.addDefaultPerk(user);
-        userService.create(user);
         return GenerateEditMessage(chat_id, message_id, text);
     }
 
-    public EditMessageText updateStat(Message message, User user, String subcommand, String statistica) {
+    public EditMessageText updateStat(Message message, String subcommand, String statistica) {
         switch (subcommand) {
             case "sub":
-                userUtils.ChangeStat(user, statistica, -1);
+                userService.updateStat(message.getChatId(), statistica, -1);
                 break;
 
             case "add":
-                userUtils.ChangeStat(user, statistica, 1);
+                userService.updateStat(message.getChatId(), statistica, 1);
                 break;
         }
 
-        return changeStat(message, statistica, user);
+        return changeStat(message, statistica);
     }
 }

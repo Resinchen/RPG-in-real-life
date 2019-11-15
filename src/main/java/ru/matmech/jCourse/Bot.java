@@ -33,8 +33,6 @@ public class Bot extends TelegramLongPollingBot {
     private String data;
 
     @Autowired
-    private UserUtils userUtils;
-    @Autowired
     private CreateCommands createCommands;
     @Autowired
     private StatCommands statCommand;
@@ -68,27 +66,25 @@ public class Bot extends TelegramLongPollingBot {
 
             logger.info("Get command {}", data);
             switch (data) {
+                case "/cheat":
+                    send(statCommand.cheatAddExp(message));
+                    break;
                 case "/create":
                     send(createCommands.createUser(message));
                     break;
 
                 case "/info":
-                    user = userUtils.getUser(message.getChatId());
-                    logger.info("Read user {}", user);
-
-                    if (userUtils.isNotNullUser(user)) {
-                        send(statCommand.getPlayerInfo(message, user));
-                        send(statCommand.getStatImage(message, user));
-                        send(statCommand.getPerks(message, user));
-                    }
-                    else {
-                        logger.error("Player not found: {}", message.getChatId());
-                        send(new SendMessage().setChatId(message.getChatId()).setText("Player not Found"));
-                    }
+                    send(statCommand.getPlayerInfo(message));
+                    send(statCommand.getStatImage(message, user));
+                    send(statCommand.getPerks(message));
                     break;
 
                 case "/perks":
                     send(perksCommand.getPerksList(message));
+                    break;
+
+                case "/add":
+                    send(perksCommand.def(message));
                     break;
             }
         }
@@ -99,30 +95,26 @@ public class Bot extends TelegramLongPollingBot {
 
             logger.info("Get Callback {}", data);
 
-            user = userUtils.getUser(message.getChatId());
-
-            logger.info("Read user {}", user);
-
             String[] spt = data.split("_");
 
                 switch (spt[0]) {
                     case "change":
                         if (spt[1].equals("stats"))
-                            send(createCommands.changeStats(message, user));
+                            send(createCommands.changeStats(message));
                         else
-                            send(createCommands.changeStat(message, spt[1], user));
+                            send(createCommands.changeStat(message, spt[1]));
                         break;
 
                     case "done":
-                        send(createCommands.donePlayer(message, user));
+                        send(createCommands.donePlayer(message));
                         break;
 
                     case "back":
-                        send(createCommands.changeStats(message, user));
+                        send(createCommands.changeStats(message));
                         break;
 
                     case "update":
-                        send(createCommands.updateStat(message, user, spt[1], spt[2]));
+                        send(createCommands.updateStat(message, spt[1], spt[2]));
                         break;
                 }
         }

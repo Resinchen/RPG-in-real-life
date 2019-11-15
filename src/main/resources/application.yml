@@ -11,3 +11,8 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: validate
+  cache:
+    cache-names: users
+    type: caffeine
+    caffeine:
+      spec: expireAfterWrite=300s

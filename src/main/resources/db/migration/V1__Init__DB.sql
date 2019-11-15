@@ -17,9 +17,9 @@ create table USERS (
     experience int4,
     free_points int4,
     intelligence int4,
+    strength int4,
     level int4,
     lucky int4,
     name varchar(255)  not null,
-    strength int4,
     primary key (user_id)
 );
