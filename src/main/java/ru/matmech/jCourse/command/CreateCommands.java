@@ -27,25 +27,30 @@ public class CreateCommands {
 
     public SendMessage createUser(Message message) {
         long chat_id = message.getChatId();
-        String text = "Create player\n" +
-                "You have 5 points.\n" +
-                "Would you change your stats?";
+        User nullUser = userService.getUserById(chat_id);
+        if (UserUtils.isNotNullUser(nullUser)) {
+            return GenerateSendMessage(chat_id, "Вы уже в игре :)");
+        } else {
+            String text = "Create player\n" +
+                    "You have 5 points.\n" +
+                    "Would you change your stats?";
 
-        InlineKeyboardButton statsBtn = GenerateKeyboardButton("Change statistic`s", "change_stats");
-        InlineKeyboardButton doneBtn = GenerateKeyboardButton("Done creating", "done_creating");
+            InlineKeyboardButton statsBtn = GenerateKeyboardButton("Change statistic`s", "change_stats");
+            InlineKeyboardButton doneBtn = GenerateKeyboardButton("Done creating", "done_creating");
 
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+            InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 
-        List<List<InlineKeyboardButton>> rows = Stream
-                .of(statsBtn, doneBtn)
-                .map(Arrays::asList)
-                .collect(Collectors.toList());
+            List<List<InlineKeyboardButton>> rows = Stream
+                    .of(statsBtn, doneBtn)
+                    .map(Arrays::asList)
+                    .collect(Collectors.toList());
 
-        keyboard.setKeyboard(rows);
+            keyboard.setKeyboard(rows);
 
-        userService.create(chat_id, message.getFrom().getUserName());
+            userService.create(chat_id, message.getFrom().getUserName());
 
-        return GenerateSendMessage(chat_id, text, keyboard);
+            return GenerateSendMessage(chat_id, text, keyboard);
+        }
     }
 
     public EditMessageText changeStats(Message message) {

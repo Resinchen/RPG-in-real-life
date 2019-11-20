@@ -7,6 +7,23 @@ import java.util.List;
 @Entity
 @Table(name = "PERKS")
 public class Perk {
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Perk other = (Perk)obj;
+        return id.equals(other.getId());
+    }
+
     public static Perk NullPerk  = new Perk(-1L, "=-=", "---");
 
     @Id

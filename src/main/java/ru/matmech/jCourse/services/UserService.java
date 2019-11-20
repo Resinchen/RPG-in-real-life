@@ -3,6 +3,8 @@ package ru.matmech.jCourse.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.matmech.jCourse.Utils.UserUtils;
 import ru.matmech.jCourse.domain.Perk;
@@ -29,7 +31,7 @@ public class UserService {
 
     public void updateStat(Long id, String stat, int dPoint) {
         logger.info("Update stat {} at {} points for user {}", stat, dPoint, id);
-        User user = repository.findById(id).orElse(User.NullUser);
+        User user = findByIdForWrite(id);
 
         if (UserUtils.isNotNullUser(user) && user.getFreePoints() > 0) {
             user.addFreePoints(-dPoint);
@@ -58,7 +60,7 @@ public class UserService {
 
     public String[] getUserInfo(Long id) {
         logger.info("Get user info by {}", id);
-        User user = repository.findById(id).orElse(User.NullUser);
+        User user = findByIdForRead(id);
         if (UserUtils.isNotNullUser(user)) {
             return new String[] {user.getName(),
                     user.getLevel().toString(),
@@ -71,7 +73,7 @@ public class UserService {
 
     public Perk[] getUserPerks(Long id) {
         logger.info("Get perks user by {}", id);
-        User user = repository.findById(id).orElse(User.NullUser);
+        User user = findByIdForRead(id);
         if (UserUtils.isNotNullUser(user)) {
             return user.getPerks().toArray(new Perk[0]);
         } else {
@@ -81,7 +83,7 @@ public class UserService {
 
     public void addExp(Long id, int experience) {
         logger.info("Add experience ({} points) to user {}", experience, id);
-        User user = repository.findById(id).orElse(User.NullUser);
+        User user = findByIdForWrite(id);
 
         if (UserUtils.isNotNullUser(user)) {
             user.addExperience(experience);
@@ -100,20 +102,33 @@ public class UserService {
     public User getUserById(Long id) {
         logger.info("Get user by {}", id);
 
-        return repository.findById(id).orElse(User.NullUser);
+        return findByIdForRead(id);
     }
 
     public void addPerk(Long id, Perk perk) {
         logger.info("Add perk {} to user {}", perk.getName(), id);
-        User user = repository.findById(id).orElse(User.NullUser);
+        logger.info(" perk {} to user {}", perk.getId(), id);
+        User user = findByIdForWrite(id);
 
         if (UserUtils.isNotNullUser(user)) {
             user.getPerks().add(perk);
             repository.save(user);
         }
     }
-
+//transactions
     /*!!!*/public void getCurrentQuest(Long id) {
         throw new NotImplementedException();
+    }
+
+    @Cacheable("users")
+    private User findByIdForRead(Long id) {
+        logger.info("Find user by {} for read", id);
+        return repository.findById(id).orElse(User.NullUser);
+    }
+
+    @CachePut("users")
+    private User findByIdForWrite(Long id) {
+        logger.info("Find user by {} for write", id);
+        return repository.findById(id).orElse(User.NullUser);
     }
 }

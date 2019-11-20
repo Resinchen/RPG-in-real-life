@@ -33,15 +33,16 @@ public class StatCommands {
                 "\nExp: " + userInfo[2] +
                 "\nPoints: " + userInfo[3];
         } else {
-            stringInfo = "Player not found";
+            stringInfo = "Начни игру командой /create";
         }
 
         return GenerateSendMarkupMessage(chat_id, stringInfo);
     }
 
-    public SendPhoto getStatImage(Message message, User user) {
+    public SendPhoto getStatImage(Message message) {
         //TODO заменить на генератор картинки
         long chat_id = message.getChatId();
+        User user = userService.getUserById(chat_id);
         if(UserUtils.isNotNullUser(user)) {
             return GenerateSendPhoto(chat_id, new File("C:\\Users\\alex1\\Desktop\\Bot.png"));
         }

@@ -25,6 +25,7 @@ import ru.matmech.jCourse.domain.User;
 
 import javax.annotation.PostConstruct;
 
+
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
@@ -75,16 +76,17 @@ public class Bot extends TelegramLongPollingBot {
 
                 case "/info":
                     send(statCommand.getPlayerInfo(message));
-                    send(statCommand.getStatImage(message, user));
+                    send(statCommand.getStatImage(message));
                     send(statCommand.getPerks(message));
                     break;
 
                 case "/perks":
                     send(perksCommand.getPerksList(message));
+                    send(perksCommand.getPerksListForUser(message));
                     break;
 
-                case "/add":
-                    send(perksCommand.def(message));
+                case "/add_perk":
+                    send(perksCommand.getPerksForAdding(message));
                     break;
             }
         }
@@ -115,6 +117,10 @@ public class Bot extends TelegramLongPollingBot {
 
                     case "update":
                         send(createCommands.updateStat(message, spt[1], spt[2]));
+                        break;
+
+                    case "add":
+                        send(perksCommand.addPerk(message, spt[2]));
                         break;
                 }
         }

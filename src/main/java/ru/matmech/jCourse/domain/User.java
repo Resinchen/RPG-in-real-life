@@ -8,7 +8,20 @@ import java.util.List;
 @Table(name = "USERS")
 public class User {
 
-    public static User NullUser = new User(-1L, "anon");
+    public static User NullUser = new User(-1L, "anon", 0, 0, 0, 0, 0, 0, 0, 0);
+
+    private User(Long id, String n, Integer lvl, Integer exp, Integer fp, Integer s, Integer e, Integer c, Integer i, Integer l) {
+        this.id = id;
+        this.name = n;
+        this.level = lvl;
+        this.experience = exp;
+        this.freePoints = fp;
+        this.strength = s;
+        this.endurance = e;
+        this.charisma = c;
+        this.intelligence = i;
+        this.lucky = l;
+    }
 
     @Override
     public String toString() {
