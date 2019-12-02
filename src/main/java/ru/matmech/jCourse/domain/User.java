@@ -8,20 +8,7 @@ import java.util.List;
 @Table(name = "USERS")
 public class User {
 
-    public static User NullUser = new User(-1L, "anon", 0, 0, 0, 0, 0, 0, 0, 0);
-
-    private User(Long id, String n, Integer lvl, Integer exp, Integer fp, Integer s, Integer e, Integer c, Integer i, Integer l) {
-        this.id = id;
-        this.name = n;
-        this.level = lvl;
-        this.experience = exp;
-        this.freePoints = fp;
-        this.strength = s;
-        this.endurance = e;
-        this.charisma = c;
-        this.intelligence = i;
-        this.lucky = l;
-    }
+    public static User NullUser = new User(-1L, "anon", 0);
 
     @Override
     public String toString() {
@@ -68,14 +55,6 @@ public class User {
     @Column(name = "lucky")
     private  Integer lucky;
 
-
-    public List<Perk> getPerks() {
-        return perks;
-    }
-    public void setPerks(List<Perk> perks) {
-        this.perks = perks;
-    }
-
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="USERS_PERKS",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -83,8 +62,24 @@ public class User {
     )
     private List<Perk> perks = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "quest_id")
+    private Quest quest;
+
     protected User() {}
 
+    private User(Long id, String n, Integer lvl) {
+        this.id = id;
+        this.name = n;
+        this.level = lvl;
+        this.experience = 0;
+        this.freePoints = 0;
+        this.strength = 0;
+        this.endurance = 0;
+        this.charisma = 0;
+        this.intelligence = 0;
+        this.lucky = 0;
+    }
     public User(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -187,5 +182,19 @@ public class User {
     }
     public void addLucky(Integer deltaLucky) {
         this.lucky += deltaLucky;
+    }
+
+    public List<Perk> getPerks() {
+        return perks;
+    }
+    public void setPerks(List<Perk> perks) {
+        this.perks = perks;
+    }
+
+    public Quest getQuest() {
+        return quest;
+    }
+    public void setQuest(Quest quest) {
+        this.quest = quest;
     }
 }

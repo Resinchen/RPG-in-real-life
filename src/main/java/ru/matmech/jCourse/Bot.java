@@ -15,13 +15,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import ru.matmech.jCourse.Utils.UserUtils;
-
 import ru.matmech.jCourse.command.CreateCommands;
 import ru.matmech.jCourse.command.PerksCommand;
+import ru.matmech.jCourse.command.QuestCommands;
 import ru.matmech.jCourse.command.StatCommands;
-
-import ru.matmech.jCourse.domain.User;
 
 import javax.annotation.PostConstruct;
 
@@ -29,7 +26,6 @@ import javax.annotation.PostConstruct;
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
-    private User user;
     private Message message;
     private String data;
 
@@ -39,12 +35,15 @@ public class Bot extends TelegramLongPollingBot {
     private StatCommands statCommand;
     @Autowired
     private PerksCommand perksCommand;
+    @Autowired
+    private QuestCommands questCommands;
 
     @Value("${bot.token}")
     private String token;
 
     @Value("${bot.username}")
     private String username;
+
 
     @PostConstruct
     public void start() {
@@ -61,36 +60,57 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
+        if (update.hasMessage()) {
             message = update.getMessage();
-            data = message.getText();
 
-            logger.info("Get command {}", data);
-            switch (data) {
-                case "/cheat":
-                    send(statCommand.cheatAddExp(message));
-                    break;
-                case "/create":
-                    send(createCommands.createUser(message));
-                    break;
+            if (message.hasText()) {
+                data = message.getText();
+                logger.info("Get command {}", data);
 
-                case "/info":
-                    send(statCommand.getPlayerInfo(message));
-                    send(statCommand.getStatImage(message));
-                    send(statCommand.getPerks(message));
-                    break;
+                switch (data.split(" ")[0]) {
+                    case "/start":
+                        send(new SendMessage()
+                                .setChatId(message.getChatId())
+                                .enableMarkdown(true)
+                                .setText("Для начала игры отправь _/create_"));
+                        break;
 
-                case "/perks":
-                    send(perksCommand.getPerksList(message));
-                    send(perksCommand.getPerksListForUser(message));
-                    break;
+                    case "/cheat":
+                        send(statCommand.cheatAddExp(message));
+                        break;
 
-                case "/add_perk":
-                    send(perksCommand.getPerksForAdding(message));
-                    break;
+                    case "/create":
+                        send(createCommands.createUser(message));
+                        break;
+
+                    case "/info":
+                        send(statCommand.getPlayerInfo(message));
+                        send(statCommand.getStatImage(message));
+                        send(statCommand.getPerks(message));
+                        break;
+
+                    case "/perks":
+                        send(perksCommand.getPerksList(message));
+                        send(perksCommand.getPerksListForUser(message));
+                        break;
+
+                    case "/add_perk":
+                        send(perksCommand.getPerksForAdding(message));
+                        break;
+
+                    case "/quests":
+                        send(questCommands.getQuests(message));
+                        break;
+
+                    case "/complete":
+                        send(questCommands.completeQuest(message));
+                        break;
+                }
+            }
+            else if (message.hasPhoto()) {
+                send(questCommands.completeQuest(message));
             }
         }
-
         else if (update.hasCallbackQuery()) {
             message = update.getCallbackQuery().getMessage();
             data = update.getCallbackQuery().getData();
@@ -121,6 +141,10 @@ public class Bot extends TelegramLongPollingBot {
 
                     case "add":
                         send(perksCommand.addPerk(message, spt[2]));
+                        break;
+
+                    case "set":
+                        send(questCommands.setQuest(message, spt[2]));
                         break;
                 }
         }

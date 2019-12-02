@@ -8,9 +8,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.matmech.jCourse.Utils.UserUtils;
 import ru.matmech.jCourse.domain.Perk;
+import ru.matmech.jCourse.domain.Quest;
 import ru.matmech.jCourse.domain.User;
 import ru.matmech.jCourse.repositories.UserRepository;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Service
 public class UserService {
@@ -24,6 +24,7 @@ public class UserService {
     public User create(Long id, String name) {
         logger.info("Create new user {}({})", id, name);
         User user = new User(id, name);
+        user.setQuest(Quest.NullQuest);
         repository.save(user);
 
         return user;
@@ -59,7 +60,7 @@ public class UserService {
     }
 
     public String[] getUserInfo(Long id) {
-        logger.info("Get user info by {}", id);
+        logger.info("Get user info {}", id);
         User user = findByIdForRead(id);
         if (UserUtils.isNotNullUser(user)) {
             return new String[] {user.getName(),
@@ -72,7 +73,7 @@ public class UserService {
     }
 
     public Perk[] getUserPerks(Long id) {
-        logger.info("Get perks user by {}", id);
+        logger.info("Get perks user {}", id);
         User user = findByIdForRead(id);
         if (UserUtils.isNotNullUser(user)) {
             return user.getPerks().toArray(new Perk[0]);
@@ -100,14 +101,11 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        logger.info("Get user by {}", id);
-
         return findByIdForRead(id);
     }
 
     public void addPerk(Long id, Perk perk) {
         logger.info("Add perk {} to user {}", perk.getName(), id);
-        logger.info(" perk {} to user {}", perk.getId(), id);
         User user = findByIdForWrite(id);
 
         if (UserUtils.isNotNullUser(user)) {
@@ -115,20 +113,40 @@ public class UserService {
             repository.save(user);
         }
     }
-//transactions
-    /*!!!*/public void getCurrentQuest(Long id) {
-        throw new NotImplementedException();
+
+    public void setQuest(long chat_id, Quest quest) {
+        logger.info("Set quest {} for {}", quest.getId(), chat_id);
+        User user = findByIdForWrite(chat_id);
+
+        if (UserUtils.isNotNullUser(user)) {
+            user.setQuest(quest);
+            repository.save(user);
+        }
+    }
+
+    public void releaseQuest(Long id) {
+        logger.info("Release quest for user {}", id);
+        User user = findByIdForWrite(id);
+
+        if (UserUtils.isNotNullUser(user)) {
+            Quest quest = user.getQuest();
+            user.addExperience(quest.getExperience());
+            user.setQuest(Quest.NullQuest);
+            repository.save(user);
+        }
     }
 
     @Cacheable("users")
     private User findByIdForRead(Long id) {
-        logger.info("Find user by {} for read", id);
+        logger.info("Find user {} for read", id);
+
         return repository.findById(id).orElse(User.NullUser);
     }
 
     @CachePut("users")
     private User findByIdForWrite(Long id) {
-        logger.info("Find user by {} for write", id);
+        logger.info("Find user {} for write", id);
+
         return repository.findById(id).orElse(User.NullUser);
     }
 }

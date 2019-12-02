@@ -21,5 +21,17 @@ create table USERS (
     level int4,
     lucky int4,
     name varchar(255)  not null,
+    quest_id int8,
     primary key (user_id)
+);
+
+create table QUESTS (
+    quest_id int8 not null,
+    name varchar(255)  not null,
+    description varchar(255) not null,
+    type varchar(255) not null,
+    answer varchar(255),
+    min_level int4,
+    experience int4,
+    primary key (quest_id)
 );
